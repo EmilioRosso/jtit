@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest>
+
+    <uses-permission />
+    <permission />
+    <permission-tree />
+    <permission-group />
+    <instrumentation />
+    <uses-sdk />
+    <uses-configuration />  
+    <uses-feature />  
+    <supports-screens />  
+    <compatible-screens />  
+    <supports-gl-texture />  
+
+    <application>
+
+        <activity>
+            <intent-filter>
+                <action />
+                <category />
+                <data />
+            </intent-filter>
+
+        </activity>
+
+        <provider>
+            <grant-uri-permission />
+            <meta-data />
+            <path-permission />
+        </provider>
+
+        <uses-library />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDavlIRU5m2FJjO8aMBdbzfSpasRvbxrSU"/>
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+    </application>
+
+</manifest>
