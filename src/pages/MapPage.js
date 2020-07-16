@@ -1,23 +1,36 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import MapView, {Marker, Callout, PROVIDER_GOOGLE} from 'react-native-maps';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, ActivityIndicator, View, Text} from 'react-native';
+import FlashMessage, {showMessage} from 'react-native-flash-message';
 
 import mapStyle from '../utils/mapStyle.json';
 import {weatherOperations, weatherSelectors} from '../redux/weather';
 import {getCity} from '../redux/city/cityOperations';
-import {selectCity} from '../redux/city/citySelectors';
+import citySelectors from '../redux/city/citySelectors';
 
 export default function MapPage({navigation}) {
   let [markerShown, setMarkerShown] = useState(false);
   let [latitude, setLatitude] = useState('');
   let [longitude, setLongitude] = useState('');
+
   const dispatch = useDispatch();
 
   const currentWeather = useSelector((store) =>
     weatherSelectors.current(store),
   );
-  const currentCity = useSelector((store) => selectCity(store));
+  const currentCity = useSelector((store) => citySelectors.selectCity(store));
+  const weatherError = useSelector((store) => weatherSelectors.error(store));
+  const cityError = useSelector((store) => citySelectors.error(store));
+
+  useEffect(() => {
+    if (weatherError || cityError) {
+      showMessage({
+        message: 'There is an error with request to server',
+        type: 'danger',
+      });
+    }
+  }, [weatherError, cityError]);
 
   const handleLongPress = ({nativeEvent}) => {
     const {latitude, longitude} = nativeEvent.coordinate;
@@ -29,7 +42,7 @@ export default function MapPage({navigation}) {
   };
 
   const handleCalloutPress = (event) => {
-    navigation.push('CityWeatherPage', {latitude, longitude});
+    navigation.push('CityWeatherPage', {latitude, longitude, currentCity});
   };
 
   return (
@@ -48,9 +61,9 @@ export default function MapPage({navigation}) {
         onLongPress={handleLongPress}>
         {markerShown && (
           <Marker
-            draggable
             coordinate={{latitude, longitude}}
-            onCalloutPress={handleCalloutPress}>
+            onCalloutPress={handleCalloutPress}
+            onMarkerDragEnd={handleCalloutPress}>
             <Callout style={styles.callout}>
               {currentWeather && (
                 <>
@@ -63,6 +76,7 @@ export default function MapPage({navigation}) {
           </Marker>
         )}
       </MapView>
+      <FlashMessage position="top" />
     </View>
   );
 }

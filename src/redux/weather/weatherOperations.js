@@ -17,9 +17,9 @@ const getCoordsForecast = (latitude, longitude) => (dispatch) => {
   dispatch(weatherActions.getCoordsForecastRequest());
   weatherAPI
     .fetchCoordsForecast(latitude, longitude)
-    .then((response) =>
-      dispatch(weatherActions.getCoordsForecastSuccess(response.data.data)),
-    )
+    .then((response) => {
+      dispatch(weatherActions.getCoordsForecastSuccess(response.data.data));
+    })
     .catch((error) =>
       dispatch(weatherActions.getCoordsForecastError(error.error)),
     );

@@ -8,11 +8,15 @@ export const getCity = (latitude, longitude) => (dispatch) => {
 
   Geocoder.from(latitude, longitude)
     .then((json) => {
-      const city = json.results[0].address_components.find(
+      let city = json.results[0].address_components.find(
         (adress) => adress.types[0] === 'locality',
-      ).long_name;
-      console.log(city);
-      dispatch(cityActions.getCitySuccess(city || 'Unknown'));
+      );
+      if (!city) {
+        city = 'Unknown';
+      } else {
+        city = city.long_name;
+      }
+      dispatch(cityActions.getCitySuccess(city));
     })
     .catch((error) => dispatch(cityActions.getCityError(error.message)));
 };
